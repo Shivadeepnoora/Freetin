@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hyderabad Live Traffic</title>
+  <meta name="description" content="Live traffic speeds, congestion and incidents across Hyderabad's key roads.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">🚦</span>
+      <div>
+        <h1>Hyderabad Live Traffic</h1>
+        <p class="sub">Key roads, jams and incidents across the city</p>
+      </div>
+    </div>
+    <div class="actions">
+      <span id="status" class="pill pill-muted">Starting…</span>
+      <button id="refreshBtn" class="btn" title="Refresh now">↻ Refresh</button>
+      <button id="settingsBtn" class="btn btn-ghost" title="API key settings">⚙︎</button>
+    </div>
+  </header>
+
+  <div id="demoBanner" class="banner" hidden>
+    <strong>Demo mode:</strong> this is <em>sample data</em>, not live traffic.
+    Add a free TomTom API key to see real-time conditions.
+    <button id="bannerKeyBtn" class="link-btn">Add key →</button>
+  </div>
+
+  <main class="layout">
+    <section class="map-wrap">
+      <div id="map" aria-label="Map of Hyderabad traffic"></div>
+      <div class="legend">
+        <span><i style="background:var(--free)"></i>Free flow</span>
+        <span><i style="background:var(--slow)"></i>Slow</span>
+        <span><i style="background:var(--heavy)"></i>Heavy</span>
+        <span><i style="background:var(--jam)"></i>Jammed</span>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="summary" id="summary">
+        <div class="stat"><span class="stat-label">City congestion</span><span class="stat-value" id="congestion">–</span></div>
+        <div class="stat"><span class="stat-label">Incidents</span><span class="stat-value" id="incidentCount">–</span></div>
+        <div class="stat"><span class="stat-label">Worst road</span><span class="stat-value small" id="worstRoad">–</span></div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button role="tab" class="tab active" data-tab="roads" aria-selected="true">Key roads</button>
+        <button role="tab" class="tab" data-tab="incidents" aria-selected="false">Incidents <span id="incidentBadge" class="badge">0</span></button>
+      </div>
+
+      <div class="tab-body" id="tab-roads">
+        <div class="list-tools">
+          <select id="sortRoads" aria-label="Sort roads">
+            <option value="congestion">Most congested first</option>
+            <option value="name">A–Z</option>
+          </select>
+        </div>
+        <ul id="roadList" class="list"></ul>
+      </div>
+
+      <div class="tab-body" id="tab-incidents" hidden>
+        <div class="list-tools">
+          <select id="filterIncidents" aria-label="Filter incidents">
+            <option value="all">All incidents</option>
+            <option value="jam">Jams</option>
+            <option value="accident">Accidents &amp; breakdowns</option>
+            <option value="works">Roadworks &amp; closures</option>
+            <option value="weather">Weather &amp; flooding</option>
+          </select>
+        </div>
+        <ul id="incidentList" class="list"></ul>
+      </div>
+
+      <footer class="panel-foot">
+        <span id="updated">Not updated yet</span> · auto-refresh every <span id="interval">5</span> min
+        <br><span id="source">Data: TomTom Traffic · Map © OpenStreetMap</span>
+      </footer>
+    </aside>
+  </main>
+
+  <dialog id="settings">
+    <form method="dialog" class="dialog">
+      <h2>Live data settings</h2>
+      <p>Live traffic comes from the <a href="https://developer.tomtom.com/" target="_blank" rel="noopener">TomTom Traffic API</a>.
+        A free key covers personal use: sign up, create an app, copy its key.</p>
+      <label>TomTom API key
+        <input id="keyInput" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your key">
+      </label>
+      <label>Auto-refresh
+        <select id="intervalInput">
+          <option value="2">Every 2 min</option>
+          <option value="5" selected>Every 5 min</option>
+          <option value="10">Every 10 min</option>
+          <option value="0">Off</option>
+        </select>
+      </label>
+      <p class="hint">The key is saved only in this browser and sent only to api.tomtom.com.</p>
+      <div class="dialog-actions">
+        <button value="clear" class="btn btn-ghost" id="clearKey">Use demo data</button>
+        <button value="save" class="btn btn-primary" id="saveKey">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
