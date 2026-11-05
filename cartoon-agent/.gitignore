@@ -1,0 +1,4 @@
+.env
+*.txt
+!first_prompt.txt
+runs/

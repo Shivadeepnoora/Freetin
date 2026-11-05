@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "founder": "noora shivadeep",
+    "company": "Faceless cartoon channel (EARN system, path 1)",
+    "problem": "\"Run the whole thing\", starting with the cartoon channel, with no channel yet.",
+    "created": "2026-11-05",
+    "skill_version": "0.1"
+  },
+  "agent": {
+    "name": "cartoon-writers-room",
+    "model": "PICKED-AT-LAUNCH",
+    "model_rationale": "Newest Opus-class (the default): creative quality and rule-following across 15 strict prompts matter most; a weekly run costs cents.",
+    "version": null,
+    "system_summary": "Writers' room for a family-friendly faceless 3D cartoon Shorts channel: creates an original series bible on the first run, then writes 5 episodes a week (Wan2GP scene prompts, narration, YouTube package) to /mnt/session/outputs/.",
+    "never_dos": [
+      "Never use branded, trademarked or third-party characters, songs or logos",
+      "Never write anything scary, violent or unsafe to imitate",
+      "Never mark the content as 'made for kids'",
+      "Never post, upload or contact anyone: files only",
+      "Never invent performance data"
+    ]
+  },
+  "outcome": {
+    "description": "first_prompt.txt: this week's writers' room session (creates the channel on the first run)",
+    "rubric_criteria": [
+      "Series bible in memory: name, 3-line personality, 2 friends, 3 locations, style string; unchanged on later runs",
+      "Exactly 5 new episodes: title ≤5 words, 2-line story, 3 scenes, warm ending",
+      "All 15 scene prompts Wan2GP-ready: style string first, one action, camera move last, <45 words, no text; scene-queue.json valid",
+      "YouTube package per episode: title <40 chars starting with the character's name, 2-line description, 5 hashtags, ≤2-sentence narration",
+      "No repeats vs episode-log.md; this week's episodes appended",
+      "Family-friendly and original: nothing scary, no branded characters, a wink for adults, not labelled made-for-kids"
+    ],
+    "max_iterations": 3
+  },
+  "tools": {
+    "toolset": "agent_toolset_20260401",
+    "enabled": ["bash", "read", "write", "edit", "glob", "grep", "web_search", "web_fetch"],
+    "disabled": [],
+    "permission_overrides": [],
+    "custom_tools": []
+  },
+  "connections": {"mcp_servers": [], "vault_credentials": [], "github": null,
+    "notes": "No connectors in v0. ElevenLabs (v2), render API (v3), YouTube (v1/v5) are planned with vault credentials."},
+  "skills": [],
+  "memory": {"stores": [{"name": "writers-room-memory", "access": "read_write",
+    "purpose": "series-bible.md (canon) + episode-log.md (every episode) so the character stays consistent and premises never repeat."}]},
+  "environment": {"name": "cartoon-writers-room-env", "type": "cloud", "networking": "unrestricted", "allowed_hosts": [], "packages": {}},
+  "schedule": {"mode": "scheduled", "cron": "30 8 * * 0", "timezone": "Asia/Kolkata", "human": "Every Sunday at 8:30 AM IST",
+    "kickoff": "user.define_outcome (first_prompt.txt + outcome.md, max_iterations 3): relative wording only"},
+  "evals": {
+    "cases": [
+      {"name": "case-01", "input": "empty memory store (first run)", "expected": "founder-approved week 1, saved at close", "last_verdict": null},
+      {"name": "case-02", "input": "evals/case-02/input/ (memory snapshot after case 1)", "expected": "same character + style string, no repeated premises, log appended", "last_verdict": null}
+    ],
+    "notes": "Synthesized: no past episodes exist. Case 2 runs on a scratch memory store so the live canon is untouched."
+  },
+  "defaults_applied": {"iteration_bound": "Outcome stops after 3 grade-and-revise cycles", "write_actions": "None: the agent writes files, you post"},
+  "interface": {"who": "the founder", "how": "Fetch week.md + scene-queue.json each Sunday; Console for run history; overview page for the map."},
+  "next_directions": [
+    {"version": "v1", "what": "Weekly review shapes the next batch", "why_deferred": "Needs real posts first; auto-pull needs YouTube Analytics credential", "how": "/performance.md in memory, then YouTube Analytics API via vault"},
+    {"version": "v2", "what": "Voiceover audio per episode", "why_deferred": "Needs an ElevenLabs API key", "how": "Vault environment_variable ELEVENLABS_API_KEY, host-limited"},
+    {"version": "v3", "what": "Clip rendering", "why_deferred": "Not possible in the CPU sandbox (Wan2GP needs a GPU)", "how": "Hosted video API or rented GPU endpoint fed from scene-queue.json"},
+    {"version": "v4", "what": "Auto-assemble the 24s Short", "why_deferred": "Needs clips first", "how": "ffmpeg via environment packages"},
+    {"version": "v5", "what": "Upload to YouTube as private/unlisted", "why_deferred": "Public action + needs YouTube OAuth", "how": "Vault credential + always_ask-gated upload"},
+    {"version": "always", "what": "Re-run evals before promoting a new agent version", "why_deferred": "Process habit", "how": "evals/run-evals.sh"}
+  ],
+  "ids": {}
+}

@@ -1,0 +1,4 @@
+{
+  "name": "cartoon-writers-room-env",
+  "config": {"type": "cloud", "networking": {"type": "unrestricted"}}
+}
